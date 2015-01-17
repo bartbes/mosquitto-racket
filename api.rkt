@@ -35,6 +35,10 @@
                           [payloadlen _int]
                           [qos _int]
                           [retain _bool]))
+(define (message-copy-payload msg)
+  (make-sized-byte-string
+   (message-payload msg)
+   (message-payloadlen msg)))
 
 (define _pw_callback (_fun _string _int _int _userdata -> _int))
 (define _connect_callback (_fun _mosquitto _userdata _int -> _void))
@@ -50,6 +54,8 @@
   _mid
   _message
   _message-pointer
+  (struct-out message)
+  message-copy-payload
 
   _pw_callback
   _connect_callback
