@@ -4,10 +4,6 @@
 
 (void (mosquitto_lib_init))
 
-(define (mosquitto-version)
-  (let-values ([(major minor revision version) (mosquitto_lib_version)])
-    (values major minor revision)))
-
 (define-syntax (wrap-callback stx)
   (syntax-case stx ()
     [(_ cb args)
@@ -20,6 +16,11 @@
        #`(if cb
              (lambda arglist call)
              #f))]))
+
+; Public API
+(define (mosquitto-version)
+  (let-values ([(major minor revision version) (mosquitto_lib_version)])
+    (values major minor revision)))
 
 (define mosquitto%
   (class object%
