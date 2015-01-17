@@ -142,7 +142,7 @@
       (let ((cb (wrap-callback callback (mid))))
         (mosquitto_disconnect_callback_set client cb)))
 
-    (define/public (set-message_callback! callback)
+    (define/public (set-message-callback! callback)
       (let ((cb (wrap-callback callback (message))))
         (mosquitto_message_callback_set client cb)))
 
