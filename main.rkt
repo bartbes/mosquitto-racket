@@ -140,30 +140,45 @@
       (mosquitto_reconnect_delay_set client delay max-delay exponential))
 
     ; Callbacks
+    (define connect-callback (box #f))
     (define/public (set-connect-callback! callback)
       (let ((cb (wrap-callback callback (retval))))
+        (set-box! connect-callback cb)
         (mosquitto_connect_callback_set client cb)))
 
+    (define disconnect-callback (box #f))
     (define/public (set-disconnect-callback! callback)
-            (let ((cb (wrap-callback callback (retval))))
+      (let ((cb (wrap-callback callback (retval))))
+        (set-box! disconnect-callback cb)
         (mosquitto_disconnect_callback_set client cb)))
 
+    (define publish-callback (box #f))
     (define/public (set-publish-callback! callback)
       (let ((cb (wrap-callback callback (mid))))
-        (mosquitto_disconnect_callback_set client cb)))
+        (set-box! publish-callback cb)
+        (mosquitto_publish_callback_set client cb)))
 
+    (define message-callback (box #f))
     (define/public (set-message-callback! callback)
-      (let ((cb (wrap-callback callback (message))))
+      (let* ((cb (lambda (msg) (callback (transform-message msg))))
+             (cb (wrap-callback cb (message))))
+        (set-box! message-callback cb)
         (mosquitto_message_callback_set client cb)))
 
+    (define subscribe-callback (box #f))
     (define/public (set-subscribe-callback! callback)
       (let ((cb (wrap-callback callback (mid qos_count granted_qos))))
+        (set-box! subscribe-callback cb)
         (mosquitto_subscribe_callback_set client cb)))
 
+    (define unsubscribe-callback (box #f))
     (define/public (set-unsubscribe-callback! callback)
       (let ((cb (wrap-callback callback (mid))))
+        (set-box! unsubscribe-callback cb)
         (mosquitto_unsubscribe_callback_set client cb)))
 
+    (define log-callback (box #f))
     (define/public (set-log-callback! callback)
       (let ((cb (wrap-callback callback (level string))))
+        (set-box! log-callback cb)
         (mosquitto_log_callback_set client cb)))))
