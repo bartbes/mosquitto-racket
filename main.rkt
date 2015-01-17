@@ -1,6 +1,7 @@
 #lang racket
 
-(require mosquitto/api)
+(require (except-in mosquitto/api message message? message-mid message-topic message-payload message-qos message-retain)
+         (prefix-in api/ mosquitto/api))
 
 (void (mosquitto_lib_init))
 
@@ -16,6 +17,15 @@
        #`(if cb
              (lambda arglist call)
              #f))]))
+
+(struct message (mid topic payload qos retain))
+(define (transform-message msg)
+  (message
+   (api/message-mid msg)
+   (api/message-topic msg)
+   (api/message-copy-payload msg)
+   (api/message-qos msg)
+   (api/message-retain msg)))
 
 ; Public API
 (define (mosquitto-version)
