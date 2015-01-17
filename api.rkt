@@ -165,6 +165,22 @@
   mosquitto_user_data_set)
 
 ;; Callbacks
+(define-mosquitto mosquitto_connect_callback_set (_fun _mosquitto _connect_callback -> _int))
+(define-mosquitto mosquitto_disconnect_callback_set (_fun _mosquitto _disconnect_callback -> _int))
+(define-mosquitto mosquitto_publish_callback_set (_fun _mosquitto _publish_callback -> _int))
+(define-mosquitto mosquitto_message_callback_set (_fun _mosquitto _message_callback -> _int))
+(define-mosquitto mosquitto_subscribe_callback_set (_fun _mosquitto _subscribe_callback -> _int))
+(define-mosquitto mosquitto_unsubscribe_callback_set (_fun _mosquitto _unsubscribe_callback -> _int))
+(define-mosquitto mosquitto_log_callback_set (_fun _mosquitto _log_callback -> _int))
+
+(provide
+ mosquitto_connect_callback_set
+ mosquitto_disconnect_callback_set
+ mosquitto_publish_callback_set
+ mosquitto_message_callback_set
+ mosquitto_subscribe_callback_set
+ mosquitto_unsubscribe_callback_set
+ mosquitto_log_callback_set)
 
 ; Utility functions
 (define-mosquitto mosquitto_connack_string (_fun _int -> _string))
