@@ -60,6 +60,43 @@
   _unsubscribe_callback
   _log_callback)
 
+;; Enums and bitmasks
+(define _error_enum
+  (_enum
+   '(conn-pending = -1
+     success = 0
+     no-mem = 1
+     protocol = 2
+     invalid-value = 3
+     not-connected = 4
+     connection-refused = 5
+     not-found = 6
+     connection-lost = 7
+     tls = 8
+     invalid-payload-size = 9
+     not-supported = 10
+     authentication = 11
+     access-denied = 12
+     unknown = 13
+     errno = 14
+     eai = 15)))
+
+(define _loglevel_bitmask
+  (_bitmask
+   '(none = 0
+     info = 1
+     notice = 2
+     warning = 4
+     err = 8
+     debug = 16
+     subscribe = 32
+     unsubscribe = 64)))
+
+(define _ssl_verify_enum
+  (_enum
+   '(none = 0
+     peer = 1)))
+
 ;; Client constructor/destructor
 (define-mosquitto mosquitto_destroy (_fun _mosquitto -> _void)
   #:wrap (deallocator))
