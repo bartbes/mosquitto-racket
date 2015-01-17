@@ -150,14 +150,14 @@
   mosquitto_disconnect)
 
 ;; Publish
-(define-mosquitto mosquitto_publish (_fun _mosquitto _mid _string _int _bytes _int _bool -> _int))
+(define-mosquitto mosquitto_publish (_fun _mosquitto (mid : (_ptr o _int)) _string _int _bytes _int _bool -> (retval : _int) -> (values retval mid)))
 
 (provide
   mosquitto_publish)
 
 ;; Subscribe/unsubscribe
-(define-mosquitto mosquitto_subscribe (_fun _mosquitto _mid _string _int -> _int))
-(define-mosquitto mosquitto_unsubscribe (_fun _mosquitto _mid _string -> _int))
+(define-mosquitto mosquitto_subscribe (_fun _mosquitto (mid : (_ptr o _int)) _string _int -> (retval : _int) -> (values retval mid)))
+(define-mosquitto mosquitto_unsubscribe (_fun _mosquitto (mid : (_ptr o _int)) _string -> (retval : _int) -> (values retval mid)))
 
 (provide
   mosquitto_subscribe
