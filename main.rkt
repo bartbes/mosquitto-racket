@@ -20,6 +20,27 @@
       (mosquitto_reinitialise client id clean_session #f))
 
     ; Authenticaion and encryption
+    (define/public (set-username-password! username password)
+      (mosquitto_username_pw_set client username password))
+    
+    (define/public (set-tls! cafile capath [certfile #f] [keyfile #f] #:callback [pw_callback #f])
+      (let ((cb (if pw_callback
+                    (lambda (buf size rwflag udata) (pw_callback buf size rwflag))
+                    #f)))
+        (mosquitto_tls_set client cafile capath certfile keyfile cb)))
+    
+    (define/public (set-tls-options! [requirements 'SSL_VERIFY_PEER] [tls_version #f] [ciphers #f])
+      (let ((req (case requirements
+                   [('SSL_VERIFY_NONE) 0]
+                   [('SSL_VERIFY_PEER) 1]
+                   [else (error "Unknown peer requirements " requirements)])))
+        (mosquitto_tls_opts_set client req tls_version ciphers)))
+    
+    (define/public (set-tls-insecure! insecure)
+      (mosquitto_tls_insecure_set client insecure))
+    
+    (define/public (set-tls-psk! psk identity [ciphers #f])
+      (mosquitto_tls_psk_set client psk identity ciphers))
     
     ; Wills
     
