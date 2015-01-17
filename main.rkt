@@ -43,6 +43,11 @@
       (mosquitto_tls_psk_set client psk identity ciphers))
     
     ; Wills
+    (define/public (set-will! topic payload [qos 0] [retain #f])
+      (mosquitto_will_set client topic (bytes-length payload) payload qos retain))
+    
+    (define/public (clear-will!)
+      (mosquitto_will_clear client))
     
     ; Connect/disconnect
     (define/public (connect host [port 1883] [keepalive 60] #:bind_address [bind_address #f])
