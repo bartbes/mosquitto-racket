@@ -8,6 +8,19 @@
   (let-values ([(major minor revision version) (mosquitto_lib_version)])
     (values major minor revision)))
 
+(define-syntax (wrap-callback stx)
+  (syntax-case stx ()
+    [(_ cb args)
+     (with-syntax ([arglist
+                    (datum->syntax stx
+                                   (append '(mosq udata) (syntax->datum #'args)))]
+                   [call
+                    (datum->syntax stx
+                                   (cons (syntax->datum #'cb) (syntax->datum #'args)))])
+       #`(if cb
+             (lambda arglist call)
+             #f))]))
+
 (define mosquitto%
   (class object%
     (init [id #f] [clean_session #t])
@@ -116,4 +129,30 @@
       (mosquitto_reconnect_delay_set client delay max-delay exponential))
     
     ; Callbacks
-))
+    (define/public (set-connect-callback! callback)
+      (let ((cb (wrap-callback callback (retval))))
+        (mosquitto_connect_callback_set client cb)))
+    
+    (define/public (set-disconnect-callback! callback)
+            (let ((cb (wrap-callback callback (retval))))
+        (mosquitto_disconnect_callback_set client cb)))
+    
+    (define/public (set-publish-callback! callback)
+      (let ((cb (wrap-callback callback (mid))))
+        (mosquitto_disconnect_callback_set client cb)))
+    
+    (define/public (set-message_callback! callback)
+      (let ((cb (wrap-callback callback (message))))
+        (mosquitto_message_callback_set client cb)))
+    
+    (define/public (set-subscribe-callback! callback)
+      (let ((cb (wrap-callback callback (mid qos_count granted_qos))))
+        (mosquitto_subscribe_callback_set client cb)))
+    
+    (define/public (set-unsubscribe-callback! callback)
+      (let ((cb (wrap-callback callback (mid))))
+        (mosquitto_unsubscribe_callback_set client cb)))
+    
+    (define/public (set-log-callback! callback)
+      (let ((cb (wrap-callback callback (level string))))
+        (mosquitto_log_callback_set client cb)))))
