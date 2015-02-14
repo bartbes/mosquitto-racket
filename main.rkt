@@ -2,6 +2,9 @@
 
 (require (except-in mosquitto/api message message? message-mid message-topic message-payload message-qos message-retain)
          (prefix-in api/ mosquitto/api))
+(provide mosquitto%
+         mosquitto-version
+         (struct-out message))
 
 (void (mosquitto_lib_init))
 
