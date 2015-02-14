@@ -48,17 +48,19 @@
       (mosquitto_username_pw_set client username password))
 
     (define/public (set-tls! cafile capath [certfile #f] [keyfile #f] #:callback [pw_callback #f])
-      (let ((cb (if pw_callback
-                    (lambda (buf size rwflag udata) (pw_callback buf size rwflag))
-                    #f)))
-        (mosquitto_tls_set client cafile capath certfile keyfile cb)))
+      (define cb
+        (if pw_callback
+            (lambda (buf size rwflag udata) (pw_callback buf size rwflag))
+            #f))
+      (mosquitto_tls_set client cafile capath certfile keyfile cb))
 
     (define/public (set-tls-options! [requirements 'SSL_VERIFY_PEER] [tls_version #f] [ciphers #f])
-      (let ((req (case requirements
-                   [('SSL_VERIFY_NONE) 0]
-                   [('SSL_VERIFY_PEER) 1]
-                   [else (error "Unknown peer requirements " requirements)])))
-        (mosquitto_tls_opts_set client req tls_version ciphers)))
+      (define req
+        (case requirements
+          [('SSL_VERIFY_NONE) 0]
+          [('SSL_VERIFY_PEER) 1]
+          [else (error "Unknown peer requirements " requirements)]))
+      (mosquitto_tls_opts_set client req tls_version ciphers))
 
     (define/public (set-tls-insecure! insecure)
       (mosquitto_tls_insecure_set client insecure))
@@ -142,21 +144,21 @@
     ; Callbacks
     (define connect-callback (box #f))
     (define/public (set-connect-callback! callback)
-      (let ((cb (wrap-callback callback (retval))))
-        (set-box! connect-callback cb)
-        (mosquitto_connect_callback_set client cb)))
+      (define cb (wrap-callback callback (retval)))
+      (set-box! connect-callback cb)
+      (mosquitto_connect_callback_set client cb))
 
     (define disconnect-callback (box #f))
     (define/public (set-disconnect-callback! callback)
-      (let ((cb (wrap-callback callback (retval))))
-        (set-box! disconnect-callback cb)
-        (mosquitto_disconnect_callback_set client cb)))
+      (define cb (wrap-callback callback (retval)))
+      (set-box! disconnect-callback cb)
+      (mosquitto_disconnect_callback_set client cb))
 
     (define publish-callback (box #f))
     (define/public (set-publish-callback! callback)
-      (let ((cb (wrap-callback callback (mid))))
-        (set-box! publish-callback cb)
-        (mosquitto_publish_callback_set client cb)))
+      (define cb (wrap-callback callback (mid)))
+      (set-box! publish-callback cb)
+      (mosquitto_publish_callback_set client cb))
 
     (define message-callback (box #f))
     (define/public (set-message-callback! callback)
@@ -167,18 +169,18 @@
 
     (define subscribe-callback (box #f))
     (define/public (set-subscribe-callback! callback)
-      (let ((cb (wrap-callback callback (mid qos_count granted_qos))))
-        (set-box! subscribe-callback cb)
-        (mosquitto_subscribe_callback_set client cb)))
+      (define cb (wrap-callback callback (mid qos_count granted_qos)))
+      (set-box! subscribe-callback cb)
+      (mosquitto_subscribe_callback_set client cb))
 
     (define unsubscribe-callback (box #f))
     (define/public (set-unsubscribe-callback! callback)
-      (let ((cb (wrap-callback callback (mid))))
-        (set-box! unsubscribe-callback cb)
-        (mosquitto_unsubscribe_callback_set client cb)))
+      (define cb (wrap-callback callback (mid)))
+      (set-box! unsubscribe-callback cb)
+      (mosquitto_unsubscribe_callback_set client cb))
 
     (define log-callback (box #f))
     (define/public (set-log-callback! callback)
-      (let ((cb (wrap-callback callback (level string))))
-        (set-box! log-callback cb)
-        (mosquitto_log_callback_set client cb)))))
+      (define cb (wrap-callback callback (level string)))
+      (set-box! log-callback cb)
+      (mosquitto_log_callback_set client cb))))
