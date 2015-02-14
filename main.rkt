@@ -1,6 +1,8 @@
-#lang racket
+#lang racket/base
 
-(require (except-in mosquitto/api message message? message-mid message-topic message-payload message-qos message-retain)
+(require (for-syntax racket/base)
+         racket/class
+         (except-in mosquitto/api message message? message-mid message-topic message-payload message-qos message-retain)
          (prefix-in api/ mosquitto/api))
 (provide mosquitto%
          mosquitto-version
