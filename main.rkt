@@ -62,8 +62,8 @@
     (define/public (set-tls-options! [requirements 'SSL_VERIFY_PEER] [tls_version #f] [ciphers #f])
       (define req
         (case requirements
-          [('SSL_VERIFY_NONE) 0]
-          [('SSL_VERIFY_PEER) 1]
+          ['SSL_VERIFY_NONE 0]
+          ['SSL_VERIFY_PEER 1]
           [else (error "Unknown peer requirements " requirements)]))
       (mosquitto_tls_opts_set client req tls_version ciphers))
 
