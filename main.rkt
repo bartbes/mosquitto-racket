@@ -6,7 +6,8 @@
          (prefix-in api/ mosquitto/api))
 (provide mosquitto%
          mosquitto-version
-         (struct-out message))
+         (struct-out message)
+         mosquitto-returncode/c)
 
 (void (mosquitto_lib_init))
 
@@ -36,6 +37,8 @@
 (define (mosquitto-version)
   (let-values ([(major minor revision version) (mosquitto_lib_version)])
     (values major minor revision)))
+
+(define mosquitto-returncode/c number?)
 
 (define mosquitto%
   (class object%
