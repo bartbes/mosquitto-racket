@@ -52,12 +52,26 @@
     (define/public (set-username-password! username password)
       (mosquitto_username_pw_set client username password))
 
-    (define/public (set-tls! cafile capath [certfile #f] [keyfile #f] #:callback [pw_callback #f])
-      (define cb
-        (if pw_callback
-            (lambda (buf size rwflag udata) (pw_callback buf size rwflag))
-            #f))
-      (mosquitto_tls_set client cafile capath certfile keyfile cb))
+    (define ca-settings (list #f #f))
+    (define client-cert-settings (list #f #f))
+    (define tls-pw-callback (box #f))
+
+    (define (set-tls!)
+      (mosquitto_tls_set
+       client
+       (car ca-settings) (cadr ca-settings)
+       (car client-cert-settings) (cadr client-cert-settings)
+       (unbox tls-pw-callback)))
+
+    (define/public (set-tls-client! certfile keyfile #:callback [pw_callback #f])
+      (define cb (wrap-callback pw_callback (buf size rwflag)))
+      (set-box! tls-pw-callback cb)
+      (set! client-cert-settings (list certfile keyfile))
+      (set-tls!))
+
+    (define/public (set-tls-ca! #:cafile [cafile #f] #:capath [capath #f])
+      (set! ca-settings (list cafile capath))
+      (set-tls!))
 
     (define/public (set-tls-options! [requirements 'SSL_VERIFY_PEER] [tls_version #f] [ciphers #f])
       (define req
