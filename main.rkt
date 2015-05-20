@@ -48,7 +48,7 @@
     (define/public (reinitialise [id #f] #:clean_session [clean_session #t])
       (mosquitto_reinitialise client id clean_session #f))
 
-    ; Authenticaion and encryption
+    ; Authentication and encryption
     (define/public (set-username-password! username password)
       (mosquitto_username_pw_set client username password))
 
